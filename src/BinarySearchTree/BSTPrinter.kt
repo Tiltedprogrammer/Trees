@@ -1,3 +1,5 @@
+
+package BinarySearchTree
 /**
  * Created by Holden Caulfield on 12.03.2017.
  */

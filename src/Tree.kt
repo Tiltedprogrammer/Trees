@@ -5,7 +5,7 @@ interface Tree<K: Comparable<K>, V>{
     //fun getroot(): Node<K,V>?
     //fun setroot(node: Node<T,E>?)
     fun insert(key: K, value: V)
-    fun search(key : K): V?
+    fun search(key : K?): V?
     fun delete(key: K)
     /**fun getheight(key: T): Int {
         var currentNode: Node<T,E>? = getroot()

@@ -1,13 +1,13 @@
+package RedBlackTree
 /**
- * Created by Holden Caulfield on 06.03.2017.
+ * Created by Holden Caulfield on 09.04.2017.
  */
-class BinIterator<T: Comparable<T>, E>(val tree: bst<T, E>): Iterator<Node<T,E>> {
-
+class RBIterator<T:Comparable<T>,E>(val tree: rbbst<T,E>):Iterator<RBNode<T,E>>{
     var next = tree.maxNode()
     override fun hasNext():Boolean {
         return next != null
     }
-    override fun next() : Node<T,E>{
+    override fun next() : RBNode<T,E>{
         if(next == null){
             throw NullPointerException()
         }

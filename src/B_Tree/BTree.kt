@@ -1,11 +1,14 @@
 /**
  * Created by Holden Caulfield on 04.04.2017.
  */
+package B_Tree
+import Tree
 import java.util.*
 class BTree<K: Comparable<K>, V>(val t: Int): Tree<K,V>,Iterable<BNode<K,V>>{
     var root: BNode<K,V>? = null
     override fun iterator(): Iterator<BNode<K, V>> = BIterator(root)
-    override fun search(key: K):V?{
+    override fun search(key: K?):V?{
+        if(key == null) return null
         var pair = InternalSearch(key)
         if(pair == null) return null
         return pair.first.keys[pair.second].second
@@ -57,14 +60,14 @@ class BTree<K: Comparable<K>, V>(val t: Int): Tree<K,V>,Iterable<BNode<K,V>>{
             insertNonFull(Node.Nodes[i],key,value)
         }
     }
-    override fun insert(key : K, value: V): Boolean{
+    override fun insert(key : K, value: V){
         if(root == null){
             this.root = BNode<K,V>()
             root!!.keys.add(Pair(key,value))
-            return true
+            return
         }
         var r = this.root
-        if(key in r!!.keys.map{it.first}) return false
+        if(key in r!!.keys.map{it.first}) return
         if(r.keys.size == 2*t-1){
             var s = BNode<K,V>()
             this.root = s
@@ -74,7 +77,7 @@ class BTree<K: Comparable<K>, V>(val t: Int): Tree<K,V>,Iterable<BNode<K,V>>{
             insertNonFull(s, key,value)
         }
         else insertNonFull(r,key, value)
-        return true
+        return
 
 
 

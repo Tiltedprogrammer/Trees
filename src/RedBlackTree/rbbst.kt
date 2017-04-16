@@ -1,10 +1,13 @@
+package RedBlackTree
+import Tree
 /**
  * Created by Holden Caulfield on 05.03.2017.
  */
 class rbbst< T: Comparable<T>, E>:Iterable<RBNode<T,E>>,Tree<T,E>{
     override fun iterator() = RBIterator(this)
     internal var root: RBNode<T,E>? = null
-    override fun search(key: T): E? {
+    override fun search(key: T?): E? {
+        if(key == null) return null
         val currentNode = searchByKey(key, root)
 
         if (currentNode == null) {

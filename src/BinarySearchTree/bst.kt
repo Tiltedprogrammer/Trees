@@ -1,12 +1,15 @@
+package BinarySearchTree
+import Tree
 /**
  * Created by Holden Caulfield on 27.02.2017.
  */
 
 
-//}
+
 class bst< T: Comparable<T>, E>( var root: Node<T,E>? = null):Tree<T,E>, Iterable<Node<T,E>>{
     override fun iterator():Iterator<Node<T,E>> = BinIterator(this)
-    override fun search(key: T): E? {
+    override fun search(key: T?): E? {
+        if(key == null) return null
         var curNode: Node<T, E>? = root
          while (curNode != null) {
             when {
