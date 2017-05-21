@@ -8,28 +8,28 @@ class rbbst< T: Comparable<T>, E>:Iterable<RBNode<T,E>>,Tree<T,E>{
     internal var root: RBNode<T,E>? = null
     override fun search(key: T?): E? {
         if(key == null) return null
-        val currentNode = searchByKey(key, root)
+        val curNode = searchByKey(key, root)
 
-        if (currentNode == null) {
+        if (curNode == null) {
             return null
         }
         else {
-            return currentNode.value
+            return curNode.value
         }
     }
 
     private fun searchByKey(key: T, nodeStart: RBNode<T, E>?): RBNode<T, E>? {
-        var currentNode: RBNode<T, E>? = nodeStart
+        var curNode: RBNode<T, E>? = nodeStart
 
-        loop@ while (currentNode != null) {
+        loop@ while (curNode != null) {
             when {
-                key < currentNode.key -> currentNode = currentNode.left
-                key > currentNode.key -> currentNode = currentNode.right
-                key == currentNode.key -> break@loop
+                key < curNode.key -> curNode = curNode.left
+                key > curNode.key -> curNode = curNode.right
+                key == curNode.key -> break@loop
             }
         }
 
-        return currentNode
+        return curNode
     }
     private fun leftrotate(Node: RBNode<T,E>) {
         val tmp = Node.right
@@ -109,38 +109,35 @@ class rbbst< T: Comparable<T>, E>:Iterable<RBNode<T,E>>,Tree<T,E>{
     }
 
 
-    override fun insert(key: T, value: E) {
-        var curNode: RBNode<T,E> = RBNode(key, value)
-        var y: RBNode<T,E>? = null
-        var x: RBNode<T,E>? = root
-        while(x != null) {
-            y = x
-            if(key < x!!.key ){
-                x = x.left
-            }
-            else{
-                x = x.right
-            }
-        }
-        curNode.parent = y
-        if(y == null){
-            root = curNode
-            curNode.color = Color.BLACK
+    override fun insert(key: T?, value: E?) {
+        if(key == null || value == null ){
+            println("null keys or values are not allowed")
             return
         }
-        if(key < y!!.key ){
-            y.left = curNode
-        }
-        else{
-            y.right = curNode
-        }
-        curNode.left = null
-        curNode.right = null
-        curNode.color = Color.RED
-        insertFixup(curNode)
+       val newNode = RBNode(key, value)
+        var curNode: RBNode<T, E>? = root
+        var prevNode: RBNode<T, E>? = null
 
+        while (curNode != null) {
+            prevNode = curNode
+            when {
+                newNode.key < curNode.key    -> curNode = curNode.left
+                newNode.key > curNode.key -> curNode = curNode.right
+                newNode.key == curNode.key -> {
+                    return
+                }
+            }
+        }
+        newNode.parent = prevNode
+        when {
+            prevNode == null -> root = newNode
+            newNode.key < prevNode.key -> prevNode.left = newNode
+            newNode.key > prevNode.key -> prevNode.right = newNode
+        }
+        newNode.color = Color.RED
+        insertFixup(newNode)
     }
-    private fun transplant(v :RBNode<T,E>, u: RBNode<T,E>?){
+    /**private fun transplant(v :RBNode<T,E>, u: RBNode<T,E>?){
         if(v.parent == null){
             root = u
         }
@@ -151,9 +148,9 @@ class rbbst< T: Comparable<T>, E>:Iterable<RBNode<T,E>>,Tree<T,E>{
             v.parent!!.right = u
         }
         u?.parent = v.parent
-    }
-    override fun delete(key: T) {
-        //if (key == null) return
+    }*/
+    override fun delete(key: T?) {
+        if (key == null) return
 
         val node = searchByKey(key, root) ?: return
         val min = minNode(node.right)

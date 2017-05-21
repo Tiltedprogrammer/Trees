@@ -1,11 +1,9 @@
 import org.junit.jupiter.api.Test
 import RedBlackTree.rbbst
-import RedBlackTree.RBIterator
 import RedBlackTree.RBNode
 import RedBlackTree.Color
 
 import org.junit.jupiter.api.Assertions.*
-import sun.invoke.empty.Empty
 import java.util.*
 
 /**
@@ -26,10 +24,7 @@ internal class rbbstTest {
         assertNull(EmptyTree.search(1))
 
     }
-    //@Test
-    //fun DeleteEmpty(){
-      //  assertFalse(EmptyTree.delete(1))
-    //}
+
 
     @Test
     fun InsertInEmptyTree() {
@@ -48,14 +43,7 @@ internal class rbbstTest {
             Tree.insert(random.nextInt(), random.nextInt())
             assertEquals(Tree.root!!.color, Color.BLACK)
         }
-        /**var prev:RbTree<Int,String>
-        val list = mutableListOf<Node<Int,String>>()
-        for (i in Tree) list.add(i)
-        for (i in 1..list.size-2) assertEquals (true,list[i+1].key > list[i].key)
-        list.clear()
-        for (i in 1..1000000) Tree.insertNode (random.nextInt(),random.nextFloat().toString())
-        for (i in Tree) list.add(i)
-        for (i in 1..list.size-2) assertEquals (true,list[i+1].key > list[i].key)**/
+
     }
     @Test
     fun testinsertcase1(){//tree is empty
@@ -131,6 +119,23 @@ internal class rbbstTest {
         assertEquals(expectedTree, actualTree)
     }
     @Test
+    fun deleteNull(){
+        var expectedTree: rbbst<Int,Int> = rbbst()
+        var actualTree: rbbst<Int,Int> = rbbst()
+        expectedTree.root = RBNode(4,4)
+        expectedTree.root!!.left = RBNode(1,1)
+        expectedTree.root!!.left!!.color = Color.RED
+        expectedTree.root!!.left!!.parent = expectedTree.root
+        expectedTree.root!!.right = RBNode(6,6)
+        expectedTree.root!!.right!!.color = Color.RED
+        expectedTree.root!!.right!!.parent = expectedTree.root
+        actualTree.insert(4,4)
+        actualTree.insert(1,1)
+        actualTree.insert(6,6)
+        actualTree.delete(null)
+        assertEquals(expectedTree,actualTree)
+    }
+    @Test
     fun deletecase1(){//X is red not leaf
         var expectedTree: rbbst<Int,Int> = rbbst()
         var actualTree: rbbst<Int,Int> = rbbst()
@@ -169,11 +174,126 @@ internal class rbbstTest {
         assertEquals(expectedTree,actualTree)
     }
     @Test
-    fun deletecase3(){//Brother is red
-        var expectedTree: rbbst<Int,Int> = rbbst()
-        var actualTree: rbbst<Int,Int> = rbbst()
+    fun deletecase3(){//Brother is red with 2 blck chldrn
+        val expectedTree = rbbst<Int, Int>()
 
+        val root = RBNode(30, 30)
+
+        val node1 = RBNode(40, 40)
+        root.right = node1
+        node1.parent = root
+
+        val node2 = RBNode(45, 45)
+        node1.right = node2
+        node2.parent = node1
+        node2.color = Color.RED
+
+        val node3 = RBNode(25, 25)
+        root.left = node3
+        node3.parent = root
+
+        val node4 = RBNode(27, 27)
+        node3.right = node4
+        node4.parent = node3
+        node4.color = Color.RED
+
+        expectedTree.root = root
+
+        val actualTree = rbbst<Int, Int>()
+
+        for (i in listOf(20, 25, 30, 40, 27, 45)) {
+            actualTree.insert(i, i)
         }
+
+        actualTree.delete(20)
+
+        assertEquals(expectedTree, actualTree)
+    }
+    @Test
+    fun deletecase4(){ //Black brother with black children
+        val expectedTree = rbbst<Int, Int>()
+
+        val root = RBNode(25, 25)
+
+        val node1 = RBNode(35, 35)
+        root.right = node1
+        node1.parent = root
+
+        val node2 = RBNode(20, 20)
+        root.left = node2
+        node2.parent = root
+
+        val node3 = RBNode(40, 40)
+        node1.right = node3
+        node3.parent = node1
+        node3.color = Color.RED
+
+        expectedTree.root = root
+
+        val actualTree = rbbst<Int, Int>()
+
+        for (i in listOf(20, 25, 30, 40, 35, 27)) {
+            actualTree.insert(i, i)
+        }
+
+        actualTree.delete(27)
+        actualTree.delete(30)
+
+        assertEquals(expectedTree, actualTree)
+    }
+    @Test
+    fun deletecase5(){//black brother with 1 left red child
+        val expectedTree = rbbst<Int, Int>()
+
+        val root = RBNode(30, 30)
+
+        val node1 = RBNode(35, 35)
+        root.right = node1
+        node1.parent = root
+
+        val node2 = RBNode(25, 25)
+        root.left = node2
+        node2.parent = root
+
+        expectedTree.root = root
+
+        val actualTree = rbbst<Int, Int>()
+
+        for (i in listOf(20, 25, 35, 30)) {
+            actualTree.insert(i, i)
+        }
+
+        actualTree.delete(20)
+
+        assertEquals(expectedTree, actualTree)
+    }
+    @Test
+    fun deletecase6(){//Black brother with right red child
+        val expectedTree = rbbst<Int, Int>()
+
+        val root = RBNode(30, 30)
+
+        val node1 = RBNode(40, 40)
+        root.right = node1
+        node1.parent = root
+
+        val node2 = RBNode(25, 25)
+        root.left = node2
+        node2.parent = root
+
+        expectedTree.root = root
+
+        val actualTree = rbbst<Int, Int>()
+
+        for (i in listOf(20, 25, 30, 40)) {
+            actualTree.insert(i, i)
+        }
+
+        actualTree.delete(20)
+
+        assertEquals(expectedTree, actualTree)
+    }
+
     @Test
     fun maxNodeTest(){
         assertEquals(66, tree.maxNode(tree.root)!!.value)

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="Graddle_Build_main" target="1.5" />
+      <module name="Graddle_Build_test" target="1.5" />
+      <module name="GradleBuild_main" target="1.5" />
+      <module name="GradleBuild_test" target="1.5" />
+      <module name="tests_main" target="1.5" />
+      <module name="tests_test" target="1.5" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

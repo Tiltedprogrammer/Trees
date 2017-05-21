@@ -26,6 +26,7 @@ class BTree<K: Comparable<K>, V>(val t: Int): Tree<K,V>,Iterable<BNode<K,V>>{
         else return InternalSearch(key, Node.Nodes[i])
     }
     private fun split(Node: BNode<K,V>, i: Int){
+        //var x = Node
         var z = BNode<K,V>()
         var y = Node.Nodes[i]
         z.leaf = y.leaf
@@ -44,15 +45,14 @@ class BTree<K: Comparable<K>, V>(val t: Int): Tree<K,V>,Iterable<BNode<K,V>>{
         y.keys.removeAt(t-1)
     }
     private fun insertNonFull(Node : BNode<K,V>, key: K, value: V){
-        var size = Node.keys.size
         var i = 0
         if(Node.leaf){
-            while((i < size) && (key > Node.keys[i].first)) i += 1
+            while((i < Node.keys.size) && (key > Node.keys[i].first)) i += 1
             Node.keys.add(i,Pair(key,value))
 
         }
         else{
-            while( i < size && key > Node.keys[i].first) i += 1
+            while( i < Node.keys.size && key > Node.keys[i].first) i += 1
             if(Node.Nodes[i].keys.size == 2*t - 1){
                 split(Node,i)
                 if(key > Node.keys[i].first) i += 1
@@ -60,35 +60,39 @@ class BTree<K: Comparable<K>, V>(val t: Int): Tree<K,V>,Iterable<BNode<K,V>>{
             insertNonFull(Node.Nodes[i],key,value)
         }
     }
-    override fun insert(key : K, value: V){
-        if(root == null){
-            this.root = BNode<K,V>()
-            root!!.keys.add(Pair(key,value))
+    override fun insert(key : K?, value: V?) {
+        if (key == null) {
+            println("null keys are not allowed")
             return
         }
-        var r = this.root
-        if(key in r!!.keys.map{it.first}) return
-        if(r.keys.size == 2*t-1){
-            var s = BNode<K,V>()
-            this.root = s
-            s.leaf = false
-            s.Nodes.add(r)
-            split(s,0)
-            insertNonFull(s, key,value)
+        if (value == null) {
+            println("null values are not allowed")
+            return
         }
-        else insertNonFull(r,key, value)
-        return
 
+        if (root == null)
+            root = BNode()
 
+        if (root!!.keys.size == 2 * t - 1) {
+            val newNode: BNode<K,V> = BNode()
+            newNode.leaf = false
+            newNode.Nodes.add(root!!)
+            split(newNode, 0)
+            root = newNode
+            insertNonFull(newNode, key, value)
+        } else
+            insertNonFull(root!!, key, value)
 
     }
-    override fun delete(key: K){
-        //if(key == null) return
+    override fun delete(key: K?){
+        if(key == null){
+            return
+        }
         //if(search(key) == null) return false
         InternalDelete(key)
     }
-    private fun InternalDelete(key: K, startNode: BNode<K,V>? = root):Boolean{
-        var delNode: BNode<K,V>? = startNode?: return false
+    private fun InternalDelete(key: K, startNode: BNode<K,V>? = root){
+        var delNode: BNode<K,V>? = startNode?: return
         if(key in delNode!!.keys.map{it.first} && delNode.leaf ){
             var i = 0
             while(i < delNode.keys.size && key > delNode.keys[i].first){
@@ -141,7 +145,7 @@ class BTree<K: Comparable<K>, V>(val t: Int): Tree<K,V>,Iterable<BNode<K,V>>{
         }
         else if(key !in delNode.keys.map { it.first }){
             if(delNode.leaf){
-                return false
+                return
             }
             else{
                 var i = 0
@@ -235,34 +239,10 @@ class BTree<K: Comparable<K>, V>(val t: Int): Tree<K,V>,Iterable<BNode<K,V>>{
                 }
             }
         }
-        return true
+        return
     }
 
-    /**override fun iterator(): Iterator<BNode<K, V>> {
-        return (object : Iterator<BNode<K, V>>{
-            var queue = LinkedList<BNode<K, V>>()
 
-            init {
-                if (root != null){
-                    queue.add(root!!)
-                }
-
-            }
-
-            override fun hasNext(): Boolean {
-                return  queue.isNotEmpty()
-            }
-
-            override fun next(): BNode<K, V> {
-                var tnode = queue.poll()
-                for (i in 0..tnode.Nodes.size-1){
-                    queue.add(tnode.Nodes[i])
-                }
-                return tnode
-            }
-
-        })
-    }**/
     private fun maxByNode(node: BNode<K, V>): Pair<K,V> {
         var currentNode = node
         while (!currentNode.leaf) {

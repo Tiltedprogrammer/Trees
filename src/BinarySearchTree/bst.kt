@@ -21,30 +21,30 @@ class bst< T: Comparable<T>, E>( var root: Node<T,E>? = null):Tree<T,E>, Iterabl
         return null
     }
 
-    override fun insert(key: T, value: E) {
+    override fun insert(key: T?, value: E?) {
+        if(key == null || value == null){
+            println("null keys or values are not allowed")
+            return
+        }
         var curNode: Node<T, E>? = root
         var prevNode: Node<T, E>? = null
         var newNode: Node<T, E> = Node(key, value)
         while (curNode != null) {
             prevNode = curNode
-            if (key < curNode.key) {
-                curNode = curNode.left
-            }
-            else {
-                curNode = curNode.right
+            when {
+                newNode.key < curNode.key    -> curNode = curNode.left
+                newNode.key > curNode.key -> curNode = curNode.right
+                newNode.key == curNode.key -> {
+                    return
+                }
             }
         }
         newNode.parent = prevNode
-        if(prevNode == null){
-            root = newNode
+        when {
+            prevNode == null -> root = newNode
+            newNode.key < prevNode.key -> prevNode.left = newNode
+            newNode.key > prevNode.key -> prevNode.right = newNode
         }
-        else if(newNode.key < prevNode.key){
-            prevNode.left = newNode
-        }
-        else{
-            prevNode.right = newNode
-        }
-
     }
     private fun transplant(u: Node<T,E>, v: Node<T,E>?){
         if(u.parent == null){
@@ -61,8 +61,10 @@ class bst< T: Comparable<T>, E>( var root: Node<T,E>? = null):Tree<T,E>, Iterabl
         }
 
     }
-    override fun delete(key :T){
-        if(key == null) return
+    override fun delete(key :T?){
+        if(key == null) {
+            return
+        }
         var curNode: Node<T, E>? = root
         loop@while (curNode != null) {
             when {

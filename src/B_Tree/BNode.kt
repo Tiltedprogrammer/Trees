@@ -11,7 +11,9 @@ class BNode<K: Comparable<K>,V> {
         for (i in 0..keys.size-2){
             s+=keys[i].first.toString()+","
         }
-        s += keys[keys.size-1].first.toString()
+        if(keys.size != 0) {
+            s += keys[keys.size - 1].first.toString()
+        }
         s+="]"
         return s
     }
